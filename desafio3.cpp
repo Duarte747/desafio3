@@ -2,36 +2,56 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 using namespace std;
 
 int main() {
     string nome_utilizador;
     int comprimento;
-    string senha;
     string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}<>?/";
+    char opcao;
 
-    // Pede o nome de utilizador
-    cout << "Digite o seu nome de utilizador: ";
-    cin >> nome_utilizador;
+    srand(time(0)); // Inicializar gerador de números aleatórios apenas uma vez
 
-    // Pede o comprimento da senha
-    cout << "Digite o comprimento da senha: ";
-    cin >> comprimento;
+    do {
+        string senha = ""; // Limpar senha anterior
 
-    // Inicializa o gerador de números aleatórios
-    srand(time(0));
+        // Obter dados do utilizador
+        cout << "Digite o seu nome de utilizador: ";
+        cin >> nome_utilizador;
 
-    // Gera a senha
-    for (int i = 0; i < comprimento; ++i) {
-        int indice = rand() % caracteres.size();
-        senha += caracteres[indice];
-    }
+        cout << "Digite o comprimento da senha: ";
+        cin >> comprimento;
 
-    // Mostra o nome de utilizador e a senha gerada
-    cout << "Utilizador: " << nome_utilizador << endl;
-    cout << "Senha gerada: " << senha << endl;
+        // Gerar a senha aleatória
+        for (int i = 0; i < comprimento; ++i) {
+            int indice = rand() % caracteres.size();
+            senha += caracteres[indice];
+        }
 
+        // Mostrar os resultados
+        cout << "Utilizador: " << nome_utilizador << endl;
+        cout << "Senha gerada: " << senha << endl;
+
+        // Guardar a senha num ficheiro
+        ofstream ficheiro("senhas.txt", ios::app);
+        if (ficheiro.is_open()) {
+            ficheiro << "Utilizador: " << nome_utilizador << endl;
+            ficheiro << "Senha gerada: " << senha << endl;
+            ficheiro << "--------------------------" << endl;
+            ficheiro.close();
+        } else {
+            cout << "Erro ao abrir o ficheiro para escrita." << endl;
+        }
+
+        // Perguntar se quer continuar
+        cout << "Deseja gerar outra senha? (s/n): ";
+        cin >> opcao;
+
+    } while (opcao == 's' || opcao == 'S');
+
+    cout << "Programa encerrado." << endl;
     return 0;
 }
 
